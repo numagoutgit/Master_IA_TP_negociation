@@ -36,13 +36,12 @@ class Agent:
         else:
             self.deals.append(offre)
 
-    def proposer_offre(self, item, agent, date):
+    def proposer_offre(self, item, prix, agent, date):
         """Propose une offre concernant l'item à un agent"""
-        if isinstance(self, Acheteur):
-            prix = np.random.randint(self.prix_max//2, self.prix_max)
-        else:
-            prix = np.random.randint(self.prix_min, self.prix_min*2)
-        return Offre(item, prix, date, self, agent)
+        offre = Offre(item, prix, date, self, agent)
+        self.offre_concurrents[agent.agentId] = offre
+        agent.offre_concurrents[self.agentId] = offre
+        return offre
           
 class Acheteur(Agent):
     """Correspond à l'acheteur du service. Son but est de payer son service le moins cher possible.
