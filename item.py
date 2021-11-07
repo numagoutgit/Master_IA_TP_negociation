@@ -1,4 +1,6 @@
-def moyenne(x, y):
-    return ((x+y)/2)
+import numpy as np
 
-print(moyenne(5,2))
+class Item:
+
+    def __init__(self, itemId):
+        self.itemId = itemId
