@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.lib.arraysetops import isin
 
 from offre import *
 
@@ -10,7 +9,7 @@ class Agent:
         - offre_concurrents : Liste de la dernière offre entre l'agent et le concurrents situé à la ie place de la liste"""
     def __init__(self, agentId, nb_adversaires):
         self.agentId = agentId
-        self.offre_concurrents = np.zeros(nb_adversaires, dtype=Offre)
+        self.offre_concurrents = [None for i in range(nb_adversaires)]
 
     def etude_offre(self, offre):
         """Renvoie un string indiquant si l'agent accepter l'offre, refuse ou choisis de négocier"""    

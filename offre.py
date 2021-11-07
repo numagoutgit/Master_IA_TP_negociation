@@ -1,6 +1,5 @@
 import numpy as np
 
-from agents import *
 from item import *
 
 class Offre:
