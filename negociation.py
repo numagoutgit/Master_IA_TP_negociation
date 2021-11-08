@@ -28,7 +28,23 @@ class Negociation:
                 offre = vendeur.proposer_offre(self.item, prix, acheteur, 0)
                 self.offres[0].append(offre)
 
+    def effecuer_tour(self, i):
+        """Effectue le tour i du jeu, les acheteurs commencent puis les vendeurs suivent"""
+        for acheteur in self.acheteurs:
+            if acheteur.deal == None:
+                offres = acheteur.tour(i)
+                self.offres[i] += offres
+        for vendeur in self.vendeurs:
+            offres = vendeur.tour(i)
+            self.offres[i] += offres
+
+    def run(self):
+        """Execute l'algorithme de jeu complet"""
+        self.initialiser_offres()
+        for k in range(1, self.duree):
+            self.effecuer_tour(k)
+
+
 item = Item(0)
 jeu = Negociation(Item,10,5,10)
-jeu.initialiser_offres()
-print([len(i) for i in jeu.offres])
+jeu.run()

@@ -33,7 +33,7 @@ class Agent:
         """Conclut le deal, si l'agent est un acheteur alors il ne peut plus acheter, si c'est un vendeur il peut encore négocier avec les acheteurs n'ayant pas encore conclut"""
         if isinstance(self, Acheteur):
             self.deal = offre
-            for o in self.offre_perso:
+            for o in self.offre_concurrents:
                 o.set_status('annuler')
         else:
             self.deals.append(offre)
@@ -43,15 +43,14 @@ class Agent:
         offre = Offre(item, prix, date, self, agent)
         self.offre_concurrents[agent.agentId] = offre
         agent.offre_concurrents[self.agentId] = offre
-        if isinstance(self, Acheteur):
-            self.offre_perso.append(offre)
         return offre
 
     def meilleure_offre(self, offres):
         """Renvoie la meilleure offre parmi une liste d'offre"""
+        prix = [offre.prix for offre in offres]
         if isinstance(self, Acheteur):
-            return offres[offres.index(min(offres))]
-        return offres[offres.index(max(offres))]
+            return offres[prix.index(min(prix))]
+        return offres[prix.index(max(prix))]
 
     def tour(self, i):
         """L'agent joue son tour. Il étudie toutes les offres auxquelles il est affilié, puis il négocie à qui il juge nécessaire. Enfin il vérifie si une de ces offres n'a pas été accepté, si oui il choisi la meilleure"""
@@ -67,16 +66,22 @@ class Agent:
             elif offre.status == 'accepter':
                 offre_acceptee.append(offre)
         if len(offre_acceptee) != 0:
-            best_offre = self.meilleure_offre(offres)
-            self.conclure_deal(best_offre)
-        else:
-            for offre in offre_negocier:
-                if isinstance(self, Acheteur):
+            if isinstance(self, Acheteur):
+                best_offre = self.meilleure_offre(offre_acceptee)
+                self.conclure_deal(best_offre)
+            else:
+                for o in offre_acceptee:
+                    self.conclure_deal(o)
+        for offre in offre_negocier:
+            if isinstance(self, Acheteur):
+                if len(offre_acceptee) == 0:
                     prix = np.random.randint(self.prix_max//2, self.prix_max)
                     offres.append(self.proposer_offre(offre.item, prix, offre.faiseur, i))
                 else:
-                    prix = np.random.randint(self.prix_min, self.prix_min*2)
-                    offres.append(self.proposer_offre(offre.item, prix, offre.faiseur, i))
+                    offre.set_status("annuler")
+            else:
+                prix = np.random.randint(self.prix_min, self.prix_min*2)
+                offres.append(self.proposer_offre(offre.item, prix, offre.faiseur, i))
         return offres
 
           
@@ -86,14 +91,12 @@ class Acheteur(Agent):
        - agentId
        - offre_concurrents
        - prix_max : Prix maximum que l'Acheteur est prêt à payer
-       - deal : Offre que l'acheteur a conclu
-       - offre_perso : liste des offres faites par l'agent"""
+       - deal : Offre que l'acheteur a conclu"""
 
     def __init__(self, agentId, nb_adversaires, prix_max):
         Agent.__init__(self, agentId, nb_adversaires)
         self.prix_max = prix_max
         self.deal = None
-        self.offre_perso = []
 
 class Vendeur(Agent):
     """Correspond au vendeur du service. Son but est de vendre ses services aux acheteurs et de gagner le plus d'argent possible.
