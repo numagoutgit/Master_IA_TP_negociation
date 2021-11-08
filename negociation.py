@@ -43,8 +43,3 @@ class Negociation:
         self.initialiser_offres()
         for k in range(1, self.duree):
             self.effecuer_tour(k)
-
-
-item = Item(0)
-jeu = Negociation(Item,10,5,10)
-jeu.run()
