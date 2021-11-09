@@ -150,3 +150,23 @@ class Vendeur_moitie(Vendeur):
         """Propose un prix"""
         prix = (self.prix_min*2 + offre.prix)//2
         return prix
+
+class Acheteur_borne(Acheteur):
+    """Acheteur avec le comportement du borné"""
+    def __init__(self, agentId, nb_adversaires, prix_max):
+        Acheteur.__init__(self, agentId, nb_adversaires, prix_max)
+
+    def proposer_prix(self, offre):
+        """Propose un prix"""
+        prix = (self.prix_max//2)//2
+        return prix
+
+class Vendeur_borne(Vendeur):
+    """Vendeur avec le comportement du borné"""
+    def __init__(self, agentId, nb_adversaires, prix_min):
+        Vendeur.__init__(self, agentId, nb_adversaires, prix_min)
+
+    def proposer_prix(self, offre):
+        """Propose un prix"""
+        prix = (self.prix_min*2)//2
+        return prix
