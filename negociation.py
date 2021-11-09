@@ -16,8 +16,8 @@ class Negociation:
     def __init__(self, item, nb_acheteurs, nb_vendeurs, duree):
         self.item = item
         self.duree = duree
-        self.acheteurs = [Acheteur(i, nb_vendeurs, np.random.randint(120,150)) for i in range(nb_acheteurs)]
-        self.vendeurs = [Vendeur(i, nb_acheteurs, np.random.randint(120,150)) for i in range(nb_vendeurs)]
+        self.acheteurs = [Acheteur_borne(i, nb_vendeurs, np.random.randint(120,150)) for i in range(nb_acheteurs)]
+        self.vendeurs = [Vendeur_borne(i, nb_acheteurs, np.random.randint(120,150)) for i in range(nb_vendeurs)]
         self.offres = [[] for i in range(duree)]
 
     def initialiser_offres(self):

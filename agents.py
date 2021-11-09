@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.lib.arraysetops import isin
 
 from offre import *
 
@@ -75,12 +74,12 @@ class Agent:
         for offre in offre_negocier:
             if isinstance(self, Acheteur):
                 if len(offre_acceptee) == 0:
-                    prix = np.random.randint(self.prix_max//2, self.prix_max)
+                    prix = self.proposer_prix(offre)
                     offres.append(self.proposer_offre(offre.item, prix, offre.faiseur, i))
                 else:
                     offre.set_status("annuler")
             else:
-                prix = np.random.randint(self.prix_min, self.prix_min*2)
+                prix = self.proposer_prix(offre)
                 offres.append(self.proposer_offre(offre.item, prix, offre.faiseur, i))
         return offres
 
@@ -111,3 +110,63 @@ class Vendeur(Agent):
         self.prix_min = prix_min
 
         self.deals = []
+
+class Acheteur_random(Acheteur):
+    """Acheteur avec le comportement random"""
+    def __init__(self, agentId, nb_adversaires, prix_max):
+        Acheteur.__init__(self, agentId, nb_adversaires, prix_max)
+
+    def proposer_prix(self, offre):
+        """Propose un prix"""
+        prix = np.random.randint(self.prix_max//2, self.prix_max)
+        return prix
+
+class Vendeur_random(Vendeur):
+    """Vendeur avec le comportement random"""
+    def __init__(self, agentId, nb_adversaires, prix_min):
+        Vendeur.__init__(self, agentId, nb_adversaires, prix_min)
+
+    def proposer_prix(self, offre):
+        """Prospose un prix"""
+        prix = np.random.randint(self.prix_min, self.prix_min*2)
+        return prix
+
+class Acheteur_moitie(Acheteur):
+    """Acheteur avec le comportement de couper le prix en deux"""
+    def __init__(self, agentId, nb_adversaires, prix_max):
+        Acheteur.__init__(self, agentId, nb_adversaires, prix_max)
+
+    def proposer_prix(self, offre):
+        """Propose un prix"""
+        prix = (self.prix_max//2 + offre.prix)//2
+        return prix
+
+class Vendeur_moitie(Vendeur):
+    """Vendeur avec le comportement de couper le prix en deux"""
+    def __init__(self, agentId, nb_adversaires, prix_min):
+        Vendeur.__init__(self, agentId, nb_adversaires, prix_min)
+
+    def proposer_prix(self, offre):
+        """Propose un prix"""
+        prix = (self.prix_min*2 + offre.prix)//2
+        return prix
+
+class Acheteur_borne(Acheteur):
+    """Acheteur avec le comportement du borné"""
+    def __init__(self, agentId, nb_adversaires, prix_max):
+        Acheteur.__init__(self, agentId, nb_adversaires, prix_max)
+
+    def proposer_prix(self, offre):
+        """Propose un prix"""
+        prix = (self.prix_max//2)//2
+        return prix
+
+class Vendeur_borne(Vendeur):
+    """Vendeur avec le comportement du borné"""
+    def __init__(self, agentId, nb_adversaires, prix_min):
+        Vendeur.__init__(self, agentId, nb_adversaires, prix_min)
+
+    def proposer_prix(self, offre):
+        """Propose un prix"""
+        prix = (self.prix_min*2)//2
+        return prix
