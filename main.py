@@ -47,7 +47,7 @@ def main(nbA_rand, nbA_m, nbA_bor, nbV_rand, nbV_m, nbV_bor, n, d):
     Y = [np.mean(v_born), np.mean(v_moit), np.mean(v_rand), np.mean(a_born), np.mean(a_moit), np.mean(a_rand)]
     X = ['Vendeur borné', 'Vendeur moitié', 'Vendeur aléatoire', 'Acheteur borné', 'Acheteur moitié', 'Acheteur aléatoire']
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(200,200))
     bar = ax.bar(X,Y, width = 0.35)
     ax.bar_label(bar, label_type='edge', labels = ['sigma = {:.2f}'.format(np.std(v_born)), 'sigma = {:.2f}'.format(np.std(v_rand)), 'sigma = {:.2f}'.format(np.std(v_moit)), 'nb_nan = {:.2f}'.format(nan_born/n), 'nb_nan = {:.2f}'.format(nan_rand/n), 'nb_nan = {:.2f}'.format(nan_moit/n)])
     plt.show()
