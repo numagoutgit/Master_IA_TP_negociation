@@ -11,23 +11,6 @@ class Agent:
         self.agentId = agentId
         self.offre_concurrents = [None for i in range(nb_adversaires)]
 
-    def etude_offre(self, offre):
-        """Renvoie un string indiquant si l'agent accepter l'offre, refuse ou choisis de négocier"""    
-        if isinstance(self, Acheteur):
-            if offre.prix > 1.2 * self.prix_max:
-                return "refuser"
-            elif offre.prix < 0.8 * self.prix_max:
-                return "accepter"
-            else:
-                return "negocier"
-        else:
-            if offre.prix < 0.8 * self.prix_min:
-                return "refuser"
-            elif offre.prix > 1.2 * self.prix_min:
-                return "accepter"
-            else:
-                return "negocier"     
-
     def conclure_deal(self, offre):
         """Conclut le deal, si l'agent est un acheteur alors il ne peut plus acheter, si c'est un vendeur il peut encore négocier avec les acheteurs n'ayant pas encore conclut"""
         if isinstance(self, Acheteur):
@@ -97,6 +80,22 @@ class Acheteur(Agent):
         self.prix_max = prix_max
         self.deal = None
 
+    def etude_offre(self, offre):
+        """Renvoie un string indiquant si l'agent accepter l'offre, refuse ou choisis de négocier"""
+        if offre.prix > 2 * self.prix_max:
+            return "refuser"
+        elif (offre.prix < self.prix_max//2) or (offre.date == offre.item.date_max and offre.prix < self.prix_max):
+            return "accepter"
+        else:
+            return "negocier"
+
+    def argent_paye(self):
+        """Renvoie la somme deboursée pour l'offre"""
+        if self.deal != None:
+            return self.deal.prix
+        else:
+            return None
+
 class Vendeur(Agent):
     """Correspond au vendeur du service. Son but est de vendre ses services aux acheteurs et de gagner le plus d'argent possible.
        Attributs:
@@ -110,6 +109,19 @@ class Vendeur(Agent):
         self.prix_min = prix_min
 
         self.deals = []
+
+    def argent_gagne(self):
+        """Renvoie la somme d'argent gagné"""
+        return sum([offre.prix for offre in self.deals])
+
+    def etude_offre(self, offre):
+        """Renvoie un string indiquant si l'agent accepter l'offre, refuse ou choisis de négocier"""
+        if offre.prix < self.prix_min//2:
+            return "refuser"
+        elif (offre.prix > 2 * self.prix_min) or (offre.date == offre.item.date_max-1 and offre.prix > self.prix_min):
+            return "accepter"
+        else:
+            return "negocier"
 
 class Acheteur_random(Acheteur):
     """Acheteur avec le comportement random"""
