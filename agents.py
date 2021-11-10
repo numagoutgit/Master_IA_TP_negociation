@@ -94,7 +94,7 @@ class Acheteur(Agent):
         if self.deal != None:
             return self.deal.prix
         else:
-            return None
+            return np.nan
 
 class Vendeur(Agent):
     """Correspond au vendeur du service. Son but est de vendre ses services aux acheteurs et de gagner le plus d'argent possible.
